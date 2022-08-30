@@ -22,12 +22,8 @@ public class QueueReceiver {
             @Override
             public void onMessage(Message message) {
                 // 通过onmessage方法收到broker给推送过来的消息，当有消息的时候就回调该方法
+                System.out.println(message.toString());
                 if (message instanceof TextMessage){
-                    try {
-                        System.out.println(((TextMessage) message).getText());
-                    } catch (JMSException e) {
-                        e.printStackTrace();
-                    }
                     try {
                         message.acknowledge();
                     } catch (JMSException e) {
@@ -36,6 +32,7 @@ public class QueueReceiver {
                 }
             }
         });
+        Thread.sleep(1000);
         // 方式二：自己创建一个实现了了一个MessageListener接口的类
 //        consumer.setMessageListener(new Mylistener());
 //        session.commit();
@@ -62,5 +59,6 @@ public class QueueReceiver {
 //        consumer.close();
 //        session.close();
 //        connection.close();
+
     }
 }

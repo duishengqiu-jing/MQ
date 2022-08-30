@@ -14,22 +14,22 @@ public class QueueReceiver2 {
         Connection connection = connectionFactory.createConnection();
         connection.start();
 
-        Session session = connection.createSession(true, Session.CLIENT_ACKNOWLEDGE);
+        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
         Destination destination = session.createQueue("testlj");
         MessageConsumer consumer = session.createConsumer(destination);
         for (int i = 0;; i++) {
             Message message = consumer.receive();
-            Thread.sleep(1000);
-            System.out.println("--------------------");
+//            Thread.sleep(1000);
             if (message instanceof TextMessage) {
-                System.out.println(new Date()+"destination2:"+destination.toString()+"TextMessage:"+((TextMessage) message).getText());
+                System.out.println(new Date()+"destination2:"+destination.toString()+"TextMessage:"+message.toString());
             }
-            if ( i % 3 == 0){
-                session.commit();
-            } else {
-                session.rollback();
-            }
+            session.commit();
+//            if ( i % 3 == 0){
+//                session.commit();
+//            } else {
+//                session.rollback();
+//            }
         }
 //        while (true) {
 //            Message message = consumer.receive();

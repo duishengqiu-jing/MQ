@@ -17,7 +17,8 @@ public class QueueReceiver3 {
         Session session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
 
         Destination destination = session.createQueue("testlj");
-        MessageConsumer consumer = session.createConsumer(destination);
+        String selector = "age > 5";
+        MessageConsumer consumer = session.createConsumer(destination, selector);
         for (int i = 0; ; i++) {
             // 阻塞 socket.accept 在这个方法被调用的时候就一直卡着直到有连接进入这个连接才会进入下一步
             // 这个receive也一样，直到有消息过来才会执行下面的，在这里只有一个线程不能支持高并发
@@ -26,10 +27,12 @@ public class QueueReceiver3 {
             // 还有IO如果这个消息比如有500M，接过来第二条没办法处理了，所以这里面改为另外方式
             // 消费过也不一定删除，比如设定了重复投递
             Message message = consumer.receive();
-            System.out.println("--------------------");
 //            Thread.sleep(1000);
             if (message instanceof TextMessage) {
-                System.out.println(new Date()+"TextMessage:"+((TextMessage) message).getText());
+                System.out.println(new Date()+"TextMessage:"+message.toString());
+                message.acknowledge();
+            } else if(message instanceof MapMessage) {
+                System.out.println(message.toString());
                 message.acknowledge();
             }
 //            if ( i % 3 == 0){
