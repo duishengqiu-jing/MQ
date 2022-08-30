@@ -17,7 +17,9 @@ public class QueueSender {
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
                 "admin",
                 "admin",
-                "tcp://172.16.157.132:61616");
+                "tcp://172.16.157.132:61616"
+//                "vm://localhost?marshal=false&broker.persistent=false"
+                );
         // 2、获取一个ActiveMQ的连接
 //        connectionFactory.setUseAsyncSend(true);
         Connection connection = connectionFactory.createConnection();
@@ -28,7 +30,7 @@ public class QueueSender {
         // 3、获取session
         Session session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
         // 4、找目的地，获取destination，和数据库最大区别会消失。提供了存储的功能，数据库的概念，不能瞎写，redis也有分库的概念，目的地
-        Destination destination = session.createQueue("testlj?producer.windowSize=1");
+        Destination destination = session.createQueue("testlj");
         // 5、从session获取生产者
         MessageProducer producer = session.createProducer(destination);
 //        producer.setDeliveryMode(DeliveryMode.PERSISTENT);
@@ -49,16 +51,49 @@ public class QueueSender {
 //            System.out.println(message);
 //        }
 //        selector 不能基于body的信息，只能基于header的信息
-        for (int i = 0; i < 30; i++) {
-            MapMessage mapMessage = session.createMapMessage();
-            mapMessage.setIntProperty("age", i % 10);
-            mapMessage.setStringProperty("name", "name"+ i%5);
-            mapMessage.setDoubleProperty("price", i*9);
-            producer.send(mapMessage);
-            System.out.println(mapMessage.toString());
-//            mapMessage.acknowledge();
+        for (int i = 0; i < 10; i++) {
+            TextMessage textMessage = session.createTextMessage("sendermsg"+i);
+            producer.send(textMessage);
+            System.out.println("【sender producer】:"+textMessage.getText());
         }
-
+        Destination replyto = session.createQueue("replytotestlj");
+//        for (int i = 0; i < 10; i++) {
+//            MapMessage mapMessage = session.createMapMessage();
+//            mapMessage.setIntProperty("age", i % 10);
+//            mapMessage.setStringProperty("name", "name"+ i%5);
+//            mapMessage.setDoubleProperty("price", i*9);
+//            mapMessage.setJMSReplyTo(replyto);
+//            producer.send(mapMessage);
+//            System.out.println("【sender producer】:"+mapMessage.toString());
+////            mapMessage.acknowledge();
+//        }
+        MessageConsumer consumer = session.createConsumer(replyto);
+        consumer.setMessageListener(new MessageListener() {
+            @Override
+            public void onMessage(Message message) {
+                if (message instanceof TextMessage) {
+                    try {
+                        System.out.println("【sender consumer replyto】:"+((TextMessage) message).getText());
+                    } catch (JMSException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        message.acknowledge();
+                    } catch (JMSException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+//        for (int i = 0; i < 10; i++) {
+//            Message message = consumer.receive();
+//            System.out.println("【sender consumer replyto】:"+i+message.toString());
+//        }
+//        MessageConsumer consumer = session.createConsumer(destination);
+//        for (int i = 0; i < 30; i++) {
+//            Message message = consumer.receive();
+//            System.out.println("consumer:"+message.toString());
+//        }
 //        for (int i = 0; i < 100; i++) {
 //            TextMessage textMessage = session.createTextMessage("test activemq:i="+i);
 //            System.out.println(new Date()+"textMessage:"+textMessage.getText());
