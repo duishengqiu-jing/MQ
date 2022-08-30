@@ -17,7 +17,9 @@ public class QueueSender {
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
                 "admin",
                 "admin",
-                "tcp://172.16.157.132:61616"
+//                "tcp://172.16.157.132:6161"
+//                "nio://172.16.157.132:61617"
+                "nio://172.16.157.132:5671"
 //                "vm://localhost?marshal=false&broker.persistent=false"
                 );
         // 2、获取一个ActiveMQ的连接

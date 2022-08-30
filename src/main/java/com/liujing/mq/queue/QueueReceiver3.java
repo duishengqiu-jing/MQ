@@ -10,7 +10,10 @@ public class QueueReceiver3 {
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
                 "admin",
                 "admin",
-                "tcp://172.16.157.132:61616");
+//                "tcp://172.16.157.132:61616"
+//                "nio://172.16.157.132:61617"
+                "tcp://172.16.157.132:5671"
+        );
         Connection connection = connectionFactory.createConnection();
         connection.start();
 
