@@ -1,4 +1,4 @@
-package com.liujing.mq;
+package com.liujing.mq01;
 
 import com.liujing.mq.queue.Person;
 import org.apache.activemq.ActiveMQConnectionFactory;
@@ -14,7 +14,8 @@ public class Receiver {
         ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(
                 "admin",
                 "admin",
-                "tcp://172.16.157.132:61616"
+//                "tcp://172.16.157.132:61616"
+                "tcp://172.16.157.132:5671"
         );
         ArrayList<String> trustPackages = new ArrayList<>();
         trustPackages.add(Person.class.getPackage().getName());

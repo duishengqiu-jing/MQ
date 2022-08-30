@@ -1,4 +1,4 @@
-package com.liujing.mq;
+package com.liujing.mq01;
 
 import com.liujing.mq.queue.Person;
 import org.apache.activemq.ActiveMQConnectionFactory;
@@ -11,7 +11,8 @@ public class Sender {
         ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(
                 "admin",
                 "admin",
-                "tcp://172.16.157.132:61616"
+//                "tcp://172.16.157.132:61616"
+                "tcp://172.16.157.132:5671"
         );
         //相同系统的里边能够以对象传递能够更加方便，只要对面有实体类，传输效率很高，序列化中转成字节码
         //去发送小的配置文件，通过mq发送，可以用bytes string，小型文件的往mq里面去写数据和消费数据
