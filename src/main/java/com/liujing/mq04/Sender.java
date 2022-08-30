@@ -16,11 +16,8 @@ public class Sender {
         connection.start();
         QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
         Queue queue = session.createQueue("new-queue");
-//        Destination replyto = session.createQueue("replyto-newqueue");
         QueueRequestor queueRequestor = new QueueRequestor(session, queue);
         System.out.println("before");
-//        TextMessage textMessage = session.createTextMessage("asada");
-//        textMessage.setJMSReplyTo(replyto);
         Message message = queueRequestor.request(session.createTextMessage("sendertextmessa2222"));
         System.out.println(message.toString());
         System.out.println("after");
