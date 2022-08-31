@@ -1,4 +1,4 @@
-package com.liujing.mq05.mq04;
+package com.liujing.mq05;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
