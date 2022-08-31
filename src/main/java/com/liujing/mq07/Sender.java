@@ -2,8 +2,11 @@ package com.liujing.mq07;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.command.ActiveMQMessage;
 
 import javax.jms.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Sender {
     public static void main(String[] args) throws Exception {
@@ -29,12 +32,15 @@ public class Sender {
             @Override
             public void onMessage(Message message) {
                 System.out.println("ps:"+message.toString());
+                ActiveMQMessage activeMQMessage = (ActiveMQMessage) message;
+                long timestamp = activeMQMessage.getTimestamp();
+                long brokerInTime = activeMQMessage.getBrokerInTime();
+                long brokerOutTime = activeMQMessage.getBrokerOutTime();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss SSSS");
+                System.out.println("timestamp:"+simpleDateFormat.format(new Date(timestamp)));
+                System.out.println("brokerInTime:"+simpleDateFormat.format(new Date(brokerInTime)));
+                System.out.println("brokerOutTime:"+simpleDateFormat.format(new Date(brokerOutTime)));
                 try {
-                    MessageProducer producer1 = session.createProducer(queue);
-                    TextMessage textMessage1 = session.createTextMessage("ps发送");
-                    textMessage1.setJMSCorrelationID(message.getJMSCorrelationID());
-//                    textMessage1.setStringProperty("type", "P");
-                    producer1.send(textMessage1);
                     message.acknowledge();
                 } catch (JMSException e) {
                     e.printStackTrace();
